@@ -47,6 +47,16 @@ from evalml.utils.logger import (
     update_pipeline
 )
 
+from hyperopt import fmin, tpe, hp, SparkTrials, Trials, STATUS_OK
+from hyperopt.pyll import scope
+from math import exp
+import mlflow.xgboost
+import numpy as np
+import xgboost as xgb
+from sklearn.metrics import roc_auc_score, mean_absolute_error
+from mlflow.models.signature import infer_signature
+
+
 logger = get_logger(__file__)
 
 
@@ -84,7 +94,29 @@ class AutoMLSearch:
                  train_best_pipeline=True,
                  pipeline_parameters=None,
                  _ensembling_split_size=0.2,
-                 _pipelines_per_batch=5):
+                 _pipelines_per_batch=5,
+                 spark_trials_tuner_args={
+                        'search_space':{
+                          'max_depth': scope.int(hp.quniform('max_depth', 4, 100, 1)),
+                          'learning_rate': hp.loguniform('learning_rate', -3, 0),
+                          'reg_alpha': hp.loguniform('reg_alpha', -5, -1),
+                          'reg_lambda': hp.loguniform('reg_lambda', -6, -1),
+                          'min_child_weight': hp.loguniform('min_child_weight', -1, 3),
+                          'feature_fraction': hp.choice('feature_fraction', [0.5, 0.6, 0.7, 0.8, 0.9]),
+                          'metric':'mape',
+                          'objective': 'reg:squarederror',
+                          'seed': 123, # Set a seed for deterministic training
+                        },
+                        'parallelism':10, 
+                        'max_evals':30, 
+                        'random_state':None, 
+                        'random_seed':0, 
+                        'X_train':None,
+                        'X_test':None,
+                        'y_train':None,
+                        'y_test':None
+
+                 }):
         """Automated pipeline search
 
         Arguments:
@@ -178,6 +210,17 @@ class AutoMLSearch:
             self.problem_type = handle_problem_types(problem_type)
         except ValueError:
             raise ValueError('choose one of (binary, multiclass, regression) as problem_type')
+
+        if str(tuner_class) == 'spark_trials_tuner':
+            from evalml.tuners import SparkTrialsTuner
+            from evalml.pipelines.components import XGBoostRegressor
+
+            stt = SparkTrialsTuner(**self.spark_trials_tuner_args)
+            best_params = stt.start_run()
+
+            pipeline = self.allowed_pipelines[0]._component_obj(**best_params)
+            pipline.fit(self.spark_trials_tuner_args['X_train'], self.spark_trials_tuner_args['y_train'])
+            return pipline
 
         self.tuner_class = tuner_class or SKOptTuner
         self.start_iteration_callback = start_iteration_callback

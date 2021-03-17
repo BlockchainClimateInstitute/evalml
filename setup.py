@@ -4,14 +4,14 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name='evalml',
-    version='0.20.0',
-    author='Alteryx, Inc.',
-    author_email='support@featurelabs.com',
-    description='EvalML is an AutoML library that builds, optimizes, and evaluates machine learning pipelines using domain-specific objective functions.',
+    name='price_microservice',
+    version='0.17.0',
+    author='Mike Casale',
+    author_email='mike.casale@blockchainclimate.org',
+    description='Price Microservice is a customized version of EvalML for use with the Blockchain Climate Institute and its price_microservice pipeline.',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/alteryx/evalml/',
+    url='https://github.com/BlockchainClimateInstitute/price_microservice',
     install_requires=open('core-requirements.txt').readlines() + open('requirements.txt').readlines()[1:],
     tests_require=open('test-requirements.txt').readlines(),
     packages=find_packages(),

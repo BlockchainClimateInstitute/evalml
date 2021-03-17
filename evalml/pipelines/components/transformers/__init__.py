@@ -6,3 +6,4 @@ from .scalers import StandardScaler
 from .column_selectors import DropColumns, SelectColumns
 from .dimensionality_reduction import LinearDiscriminantAnalysis, PCA
 from .preprocessing import DateTimeFeaturizer, DropNullColumns, LSA, TextFeaturizer, DelayedFeatureTransformer, DFSTransformer
+from .lookup_table_transformer import LookupTableTransformer

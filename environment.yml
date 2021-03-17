@@ -1,0 +1,13 @@
+name: price_microservice_e
+channels:
+  - pytorch
+  - anaconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - pip
+  - pip:
+    - dist/price_microservice-0.17.0-py3-none-any.whl
+
+

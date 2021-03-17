@@ -1,4 +1,17 @@
 from .logger import get_logger, log_subtitle, log_title
+from .geo_utils import (
+    deg2rad,
+    rad2deg,
+    get_latmin,
+    get_latmax,
+    get_pradius,
+    get_postcodeOutcode_from_postcode,
+    get_postcode_from_address,
+    get_postcodeArea_from_outcode,
+    ReadParquetFile,
+    download_postcodes,
+    preprocess_data
+)
 from .gen_utils import (
     classproperty,
     import_or_raise,

@@ -22,7 +22,8 @@ from .estimators import (
     TimeSeriesBaselineEstimator,
     KNeighborsClassifier,
     SVMClassifier,
-    SVMRegressor
+    SVMRegressor,
+    NGBoostRegressor
 )
 from .transformers import (
     Transformer,
@@ -44,7 +45,8 @@ from .transformers import (
     LinearDiscriminantAnalysis,
     LSA,
     PCA,
-    DFSTransformer
+    DFSTransformer,
+    LookupTableTransformer
 )
 from .ensemble import (
     StackedEnsembleClassifier,

@@ -29,9 +29,11 @@ from .components import (
     StackedEnsembleRegressor,
     DelayedFeatureTransformer,
     DFSTransformer,
+    LookupTableTransformer,
     KNeighborsClassifier,
     SVMClassifier,
-    SVMRegressor
+    SVMRegressor,
+    NGBoostRegressor
 )
 
 from .component_graph import ComponentGraph

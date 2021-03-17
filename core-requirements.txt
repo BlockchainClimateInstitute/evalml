@@ -15,3 +15,9 @@ woodwork==0.0.10
 featuretools>=0.20.0
 nlp-primitives>=1.1.0
 networkx>=2.5
+mlflow[extras]
+hyperopt
+boto3
+dask
+ngboost
+jupyter-book
