@@ -1,0 +1,81 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # specify the version you desire here
+      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
+      - image: circleci/python:3.8
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/postgres:9.4
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-py38-{{ arch }}-{{ checksum "requirements.txt" }}
+            # fallback to using the latest cache if no exact match is found
+            # - v1-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate 
+            pip install --upgrade pip
+            pip install --upgrade wheel
+            pip install -r requirements.txt
+
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-py38-{{ arch }}-{{ checksum "requirements.txt" }}
+
+      - run:
+          name: pylint checks
+          command: |
+            . venv/bin/activate
+            pip install pylint==2.6.0
+            python -m pylint ml_rest_api
+
+      - run:
+          name: mypy type hint checks
+          command: |
+            . venv/bin/activate
+            pip install mypy==0.800
+            python -m mypy --pretty --config-file=mypy.ini ml_rest_api
+
+      - run:
+          name: black formatter checks
+          command: |
+            . venv/bin/activate
+            pip install black==20.8b1
+            python -m black --check ml_rest_api
+
+      # run tests!
+      # this example uses Django's built-in test-runner
+      # other common Python testing frameworks include pytest and nose
+      # https://pytest.org
+      # https://nose.readthedocs.io
+      #- run:
+      #    name: run tests
+      #    command: |
+      #      . venv/bin/activate
+      #      python manage.py test
+
+      #- store_artifacts:
+      #    path: test-reports
+      #    destination: test-reports
+notify:
+  webhooks:
+    - url: https://outlook.office.com/webhook/8d230079-7597-40f5-97bf-fbebc881c146@d78f2755-3785-4233-9333-cae33ed781c5/CircleCI/19845da4f238402fb7c4d788315fcd31/be3e90f5-94ca-40af-a03c-5eed00932c99
